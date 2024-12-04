@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="./static/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark" />
+    <meta name="generator" content="Marmite" />
+    
+<meta property="og:title" content="Clean Code">
+
+<meta property="og:description" content="Pisanie czystego kodu nie jest łatwe i każdy, kto napisał trochę kodu w swoim życiu wie co mam na my...">
+
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="gruszka.dev">
+
+<meta property="article:published_time" content=" 2020-05-10T00:00:00+00:00">
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/cleancode.html"
+    },
+    "url": "/cleancode.html",
+    "headline": "Clean Code",
+    "description": "Pisanie czystego kodu nie jest łatwe i każdy, kto napisał trochę kodu w swoim życiu wie co mam na myśli.
+Jestem obecnie na etapie lektury (a...",
+    
+    
+    "publisher": {
+        "@type": "Organization",
+        "name": "gruszka.dev",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/"
+        }
+    },
+    "datePublished": "2020-05-10T00:00:00+00:00"
+}
+</script>
+
+
+    <title>Clean Code | gruszka.dev</title>
+    <link rel="stylesheet" type="text/css" href="./static/pico.min.css">
+    <link rel="stylesheet" type="text/css" href="./static/marmite.css">
+    
+    <link rel="stylesheet" type="text/css" href="./static/custom.css">
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/github.min.css" id="highlightjs-theme" />
+
+
+
+    <link rel="alternate" type="application/rss+xml" title="index" href="index.rss">
+    <link rel="alternate" type="application/rss+xml" title="tag: code" href="tag-code.rss">
+    <link rel="alternate" type="application/rss+xml" title="tag: cleancode" href="tag-cleancode.rss">
+    <link rel="alternate" type="application/rss+xml" title="year: 2020" href="archive-2020.rss">
+    
+
+    
+    
+    
+</head>
+<body>
+    
+    <main class="container">
+        
+        <header class="header-content">
+            <nav class="header-nav">
+                <ul class="header-name">
+                    <li>
+                        <hgroup>
+                            <h2><a href="./" class="contrast">gruszka.dev</a></h2>
+                             <p>Things I would like to share</p> 
+                        </hgroup>
+                    </li>
+                </ul>
+                <button id="menu-toggle" class="hamburger">&#9776;</button>
+                
+                <ul class="header-menu" id="header-menu">
+                    
+                      
+                      
+                    <li>
+                        
+                        <a class="menu-item secondary"  href="./about.html">about</a>
+                        
+                    </li>
+                    
+                      
+                      
+                    <li>
+                        
+                        <a class="menu-item secondary"  href="./pages.html">pages</a>
+                        
+                    </li>
+                    
+                      
+                      
+                    <li>
+                        
+                        <a class="menu-item secondary"  href="./tags.html">tags</a>
+                        
+                    </li>
+                    
+                      
+                      
+                    <li>
+                        
+                        <a class="menu-item secondary"  href="./archive.html">archive</a>
+                        
+                    </li>
+                    
+                      
+                      
+                    <li>
+                        
+                        <a class="menu-item secondary"  href="https://cotamgruchawit.pl" target="_blank" >co tam grucha w IT podcast</a>
+                        
+                    </li>
+                    
+                    <li><span class="theme-toggle secondary" title="dark mode">&#9789;</span></li>
+                    
+                    <div class="underline"></div>
+                </ul>
+            </nav>
+            
+        </header>
+        
+        <section class="main-content">
+            
+
+
+
+<article>
+
+  
+
+
+<div class="content-title" id="title">
+    <h1>Clean Code</h1> 
+    
+
+
+<span class="content-date">
+    <small> May 10, 2020 - &#10710; 2 min</small>
+</span>
+
+</div>
+
+  
+
+  <div class="content-html"><p>Pisanie czystego kodu nie jest łatwe i każdy, kto napisał trochę kodu w swoim życiu wie co mam na myśli.</p>
+<p>Jestem obecnie na etapie lektury (a właściwie powrotu do) &quot;Clean Code&quot; Uncle Boba. Chciałbym wypunktować parę rzeczy, które znalazły się w książce i warto o nich pamiętać. Krótko i zwięźle:</p>
+<ul>
+<li>niech nazwy przedstawiają intencje i komunikują do czego są przeznaczone</li>
+<li>unikanie dezinformacji (np. unikanie skrótów)
+<pre><code class="language-php">$criteria zamiast $c
+</code></pre>
+</li>
+<li>nie używamy magicznych liczb
+<pre><code class="language-php">if($counter === 12)
+</code></pre>
+lepiej
+<pre><code class="language-php">if($counter === ALLOWED_ENTRIES)
+</code></pre>
+</li>
+<li>nie stosujemy notacji węgierskiej
+<pre><code class="language-php">$strFirstName
+</code></pre>
+lepiej:
+<pre><code class="language-php">$firstName
+</code></pre>
+</li>
+<li>nie stosujemy prefiksu lub postfiksu <code>Interface</code>. Interfejs jest tylko abstrakcją
+<pre><code class="language-php">interface CsvWriterInterface
+</code></pre>
+lepiej:
+<pre><code class="language-php">interface CsvWriter
+</code></pre>
+</li>
+<li>to że Ty wiesz, że zmienna <strong><code>r</code></strong> znaczy coś, nie znaczy, że ktoś inny jak będzie to czytał, to będzie też to wiedział</li>
+<li>nazwy klas powinny być rzeczownikami lub wyrażeniami rzeczownikowymi
+<pre><code class="language-php">class User {}
+</code></pre>
+</li>
+<li>nazwy metod powinny być czasownikami lub wyrażeniami czasownikowymi
+<pre><code class="language-php">function login() {}
+</code></pre>
+</li>
+<li>akcesory, mutatory i predykaty powinny być poprzedzone przedrostkiem get, set, is</li>
+<li>będź spójny w ramach bazy kodu - np. fetch, retrieve, get do analogicznych metod w róznych klasach</li>
+<li>dodaj znaczący kontekst - wiele nazw nie niesie za sobą wystarczająco treści - konieczne jest umieszczenie nazw we właściwym kontekście przez wstawienie ich w odpowiednio nazwane klasy, funkcje i przestrzenie nazw</li>
+<li>nie prefiksujemy nazw ogólnoznanym terminem np. &quot;Luksusowa Stacja Benzynowa&quot; używamy w nazwach jako LSBCustomer</li>
+<li>twórz małe funkcje max. 20-30 wierszy</li>
+<li>bloki w instrukcjach if, else, while i podobnych powinny mieć po jednym wierszu i prawdopodobnie wiersze te powinny być wywołaniem funkcji; oznacza to że funkcja nie może być na tyle duża, aby zawierała zagnieżdzone struktury, dlatego poziom wcięć w funkcji nie powinien przekraczać dwóch.</li>
+<li>funkcje powinny wykonywać tylko jedną operację, powinny robić to dobrze. powinny robić tylko to.</li>
+<li>długa opisowa nazwa jest lepsza niż krótka enigmatyczna</li>
+<li>im mniej parametrów przekazywanych do funkcji tym lepiej (najlepiej zero), może trzeba je wydzielić jako parametry klasy</li>
+<li>gdy funkcja wymaga więcej niż dwóch lub trzech argumentów, najprawdopodobniej niektóre z nich powinny być umieszczone w osobnej klasie.</li>
+<li>jeśli funkcja musi zmieniać stan czegokolwiek, powinna zmieniać stan własnego obiektu</li>
+<li>rozdzielanie poleceń i zapytań (funkcje powinny coś wykonywać lub odpowiadać na jakieś pytanie, ale nie powinny robić tych dwóch operacji jednocześnie)</li>
+<li>powinniśmy stosować wyjątki zamiast obsługi błędów</li>
+</ul>
+</div>
+  
+  <footer class="data-tags-footer">
+
+    <div class="content-authors-flex">
+      <div class="content-authors-full">
+        
+
+      </div>
+
+      <div class="date-tags-container">
+        <div class="content-date">
+          
+
+
+<span class="content-date">
+    <small> May 10, 2020 - &#10710; 2 min</small>
+</span>
+
+        </div>
+
+        <ul class="content-tags">
+          
+          <li><a href="./tag-cleancode.html">cleancode</a></li>
+          
+        </ul>
+      </div>
+    </div>
+  </footer>
+  
+</article>
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+
+        </section>
+        
+        <footer class="footer-content grid">
+            <div>Powered by <a href="https://github.com/rochacbruno/marmite">Marmite</a> | <small><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY_NC-SA</a></small></div>
+            
+        </footer>
+        
+    </main>
+
+    <script src="./static/marmite.js"></script>
+    <script src="./static/custom.js"></script>
+    
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
+<script>
+  hljs.highlightAll();
+</script>
+
+
+
+</body>
+</html>

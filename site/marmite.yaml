@@ -1,0 +1,9 @@
+name: gruszka.dev
+tagline: Things I would like to share
+pagination: 10
+menu:
+  - ["about", "about.html"]
+  - ["pages", "pages.html"]
+  - ["tags", "tags.html"]
+  - ["archive", "archive.html"]
+  - ["co tam grucha w IT podcast", "https://cotamgruchawit.pl"]

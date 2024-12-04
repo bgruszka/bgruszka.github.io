@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="./static/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark" />
+    <meta name="generator" content="Marmite" />
+    
+<meta property="og:title" content="Operacje bitowe">
+
+<meta property="og:description" content=" są wygodną formą manipulowania danymi.
+Wyobraź sobie, że jesteś programistą i masz za zadanie napis...">
+
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="gruszka.dev">
+
+<meta property="article:published_time" content=" 2020-06-19T00:00:00+00:00">
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "/operacje-bitowe.html"
+    },
+    "url": "/operacje-bitowe.html",
+    "headline": "Operacje bitowe",
+    "description": " są wygodną formą manipulowania danymi.
+Wyobraź sobie, że jesteś programistą i masz za zadanie napisac ważny element systemu operacyjnego. P...",
+    
+    
+    "publisher": {
+        "@type": "Organization",
+        "name": "gruszka.dev",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "/"
+        }
+    },
+    "datePublished": "2020-06-19T00:00:00+00:00"
+}
+</script>
+
+
+    <title>Operacje bitowe | gruszka.dev</title>
+    <link rel="stylesheet" type="text/css" href="./static/pico.min.css">
+    <link rel="stylesheet" type="text/css" href="./static/marmite.css">
+    
+    <link rel="stylesheet" type="text/css" href="./static/custom.css">
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/github.min.css" id="highlightjs-theme" />
+
+
+
+    <link rel="alternate" type="application/rss+xml" title="index" href="index.rss">
+    <link rel="alternate" type="application/rss+xml" title="tag: code" href="tag-code.rss">
+    <link rel="alternate" type="application/rss+xml" title="tag: cleancode" href="tag-cleancode.rss">
+    <link rel="alternate" type="application/rss+xml" title="year: 2020" href="archive-2020.rss">
+    
+
+    
+    
+    
+</head>
+<body>
+    
+    <main class="container">
+        
+        <header class="header-content">
+            <nav class="header-nav">
+                <ul class="header-name">
+                    <li>
+                        <hgroup>
+                            <h2><a href="./" class="contrast">gruszka.dev</a></h2>
+                             <p>Things I would like to share</p> 
+                        </hgroup>
+                    </li>
+                </ul>
+                <button id="menu-toggle" class="hamburger">&#9776;</button>
+                
+                <ul class="header-menu" id="header-menu">
+                    
+                      
+                      
+                    <li>
+                        
+                        <a class="menu-item secondary"  href="./about.html">about</a>
+                        
+                    </li>
+                    
+                      
+                      
+                    <li>
+                        
+                        <a class="menu-item secondary"  href="./pages.html">pages</a>
+                        
+                    </li>
+                    
+                      
+                      
+                    <li>
+                        
+                        <a class="menu-item secondary"  href="./tags.html">tags</a>
+                        
+                    </li>
+                    
+                      
+                      
+                    <li>
+                        
+                        <a class="menu-item secondary"  href="./archive.html">archive</a>
+                        
+                    </li>
+                    
+                      
+                      
+                    <li>
+                        
+                        <a class="menu-item secondary"  href="https://cotamgruchawit.pl" target="_blank" >co tam grucha w IT podcast</a>
+                        
+                    </li>
+                    
+                    <li><span class="theme-toggle secondary" title="dark mode">&#9789;</span></li>
+                    
+                    <div class="underline"></div>
+                </ul>
+            </nav>
+            
+        </header>
+        
+        <section class="main-content">
+            
+
+
+
+<article>
+
+  
+
+
+<div class="content-title" id="title">
+    <h1>Operacje bitowe</h1> 
+    
+
+
+<span class="content-date">
+    <small> Jun 19, 2020 - &#10710; 2 min</small>
+</span>
+
+</div>
+
+  
+
+  <div class="content-html"><p>Operacje bitowe są wygodną formą manipulowania danymi.</p>
+<p>Wyobraź sobie, że jesteś programistą i masz za zadanie napisac ważny element systemu operacyjnego. Powiedziano Ci, że możesz używać zmiennej przypisanej w następujący sposób:</p>
+<pre><code class="language-python">flagRegister = 0x1234
+</code></pre>
+<p>Zmienna przechowuje informacje o różnych aspektach działania systemu. Każdy bit zmiennej przechowuje jedną wartość 0 / 1. Powiedziano Ci również, że tylko jeden z tych bitów należy do Ciebie - trzeci (bity są ponumerowane od zera; bit numer zero jest najniższy, a najwyższy to 31). Pozostałe bity nie mogą się zmieniać, ponieważ są przeznaczone do przechowywania innych danych. Oto twój bit oznaczony literą x →</p>
+<p><code>flagRegister: 0000000000000000000000000000x000</code></p>
+<p>Oto co możesz zrobic wykorzystując operacje bitowe:</p>
+<ul>
+<li>
+<p>sprawdź stan swojego bitu - chcesz poznać wartość swojego bitu; możesz użyć następującej właściwości koniunkcji:</p>
+<p><code>x &amp; 1 = x</code></p>
+<p><code>x &amp; 0 = 0</code></p>
+<p>Jeśli zastosujesz operację &amp; do zmiennej <code>flagRegister</code> wraz z następującym obrazem bitowym:
+<code>0000000000000000000000000000001000</code>
+(zwróć uwagę na 1 na pozycji bitu, który Cię interesuje), w wyniku czego otrzymujesz jeden z następujących ciągów bitów:</p>
+<p><code>0000000000000000000000000000001000</code>, jeśli twój bit został ustawiony na 1</p>
+<p><code>0000000000000000000000000000000000</code>, jeśli twój bit został ustawiony na 0</p>
+<p>Taka sekwencja zer i jedynek, których zadaniem jest przechwycenie wartości lub zmiana wybranych bitów, nazywa się maską bitową. Zbudujmy maskę bitową, aby wykryć stan twojego bitu. Dla przypomnienia - jest to trzeci bit licząc od prawej (1000), czyli w tym przypadku 8. Odpowiednią maskę można utworzyć na podstawie następującej deklaracji:</p>
+<pre><code class="language-python">mask = 8
+</code></pre>
+<p>Możesz wykonać sekwencję instrukcji w zależności od stanu twojego bitu:</p>
+<pre><code class="language-python">if flagRegister &amp; mask:
+    # my bit is set
+else:
+    # my bit is reset
+</code></pre>
+</li>
+<li>
+<p>zresetuj swój bit - przypisujesz zero do swojego bitu, podczas gdy wszystkie inne bity pozostają niezmienione; użyjmy tej samej właściwości koniunkcji, co poprzednio, ale użyjmy nieco innej maski - dokładnie tak jak poniżej:
+111111111111111111111111111111<strong>0</strong>111</p>
+<p>Zauważ, że maska została utworzona w wyniku zanegowania wszystkich bitów zmiennej <code>mask</code>. Resetowanie bitu jest proste i wygląda tak:</p>
+<pre><code class="language-python">flagRegister = flagRegister &amp; ~mask
+</code></pre>
+<pre><code class="language-python">flagRegister &amp;= ~mask
+</code></pre>
+</li>
+<li>
+<p>ustaw swój bit - przypisujesz 1 do swojego bitu, podczas gdy wszystkie pozostałe bity muszą pozostać niezmienione; użyj następującej właściwości rozłączenia:</p>
+<p><code>x | 1 = 1</code></p>
+<p><code>x | 0 = x</code></p>
+<p>Teraz możesz ustawić swój bit, wykonując jedną z poniższych instrukcji:</p>
+<pre><code class="language-python">flagRegister = flagRegister | mask
+</code></pre>
+<pre><code class="language-python">flagRegister |= mask
+</code></pre>
+</li>
+<li>
+<p>Zaneguj swój bit - zamieniasz 1 na 0, a 0 na 1. Możesz użyć interesującej właściwości operatora xor:</p>
+<p><code>x ^ 1 = ~ x</code></p>
+<p><code>x ^ 0 = x</code></p>
+<p>Zaneguj swój bit, wykonując poniższe instrukcje:</p>
+<pre><code class="language-python">flagRegister = flagRegister ^ mask
+</code></pre>
+<pre><code class="language-python">flagRegister ^= mask
+</code></pre>
+</li>
+</ul>
+<p>Jak widzisz operacje bitowe są proste i jednocześnie efektywne :)</p>
+</div>
+  
+  <footer class="data-tags-footer">
+
+    <div class="content-authors-flex">
+      <div class="content-authors-full">
+        
+
+      </div>
+
+      <div class="date-tags-container">
+        <div class="content-date">
+          
+
+
+<span class="content-date">
+    <small> Jun 19, 2020 - &#10710; 2 min</small>
+</span>
+
+        </div>
+
+        <ul class="content-tags">
+          
+          <li><a href="./tag-code.html">code</a></li>
+          
+        </ul>
+      </div>
+    </div>
+  </footer>
+  
+</article>
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+
+        </section>
+        
+        <footer class="footer-content grid">
+            <div>Powered by <a href="https://github.com/rochacbruno/marmite">Marmite</a> | <small><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY_NC-SA</a></small></div>
+            
+        </footer>
+        
+    </main>
+
+    <script src="./static/marmite.js"></script>
+    <script src="./static/custom.js"></script>
+    
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
+<script>
+  hljs.highlightAll();
+</script>
+
+
+
+</body>
+</html>
