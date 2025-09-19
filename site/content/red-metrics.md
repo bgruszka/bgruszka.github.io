@@ -1,6 +1,6 @@
 ---
 date: 2025-09-19
-tags: metrics,devops
+tags: metrics,devops,observability
 ---
 # Metryki RED – prosty sposób na zrozumienie zdrowia systemu
 
