@@ -3,6 +3,7 @@ tagline: Things I would like to share
 pagination: 10
 menu:
   - ["about", "about.html"]
+  - ["projects", "projects.html"]
   - ["pages", "pages.html"]
   - ["tags", "tags.html"]
   - ["archive", "archive.html"]

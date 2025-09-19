@@ -1,10 +1,10 @@
 {
   "marmite_version": "0.2.6",
   "posts": 3,
-  "pages": 1,
-  "generated_at": "2025-09-19 16:00:40.554852 +02:00",
-  "timestamp": 1758290440,
-  "elapsed_time": 0.017340833,
+  "pages": 2,
+  "generated_at": "2025-09-19 16:05:12.070737 +02:00",
+  "timestamp": 1758290712,
+  "elapsed_time": 0.023051,
   "config": {
     "name": "gruszka.dev",
     "tagline": "Things I would like to share",
@@ -40,6 +40,10 @@
       [
         "about",
         "about.html"
+      ],
+      [
+        "projects",
+        "projects.html"
       ],
       [
         "pages",

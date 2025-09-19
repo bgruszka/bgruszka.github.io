@@ -1,0 +1,3 @@
+# Projects
+
+* https://github.com/bgruszka/modeli-mundi-3d / [demo](https://modeli-mundi-3d.gruszka.dev/) - Interactive 3D visualization of historical cosmological models from Aristotle to Einstein. Explore how humanity's understanding of the universe evolved through beautifully rendered 3D models with realistic planet textures, animations, and educational content. Built with Three.js and available as both web app and Android application.
