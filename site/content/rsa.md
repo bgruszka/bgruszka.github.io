@@ -2,7 +2,7 @@
 date: 2025-12-18
 tags: rsa,cryptography,security,encryption,algorithms
 ---
-# RSA – czyli jak działa szyfrowanie asymetryczne bez czarnej magii ;-)
+# RSA – czyli jak działa szyfrowanie asymetryczne bez czarnej magii
 
 Parę tygodni temu ktoś mnie zapytał: *„Ej, a tak normalnie, po ludzku – jak działa RSA?”*.
 
