@@ -290,16 +290,16 @@ I voilà:
 
 ```mermaid
 flowchart TB
-    subgraph PUBLIC["🌍 PUBLICZNE - Wszyscy mogą znać"]
+    subgraph PUBLIC["🌍 PUBLICZNE"]
         E[e = 17<br/>wykładnik publiczny]
         N[n = 3233<br/>moduł]
     end
 
-    subgraph SECRET["🔒 TAJNE - Tylko właściciel"]
+    subgraph SECRET["🔒 TAJNE"]
         D[d = 2753<br/>wykładnik prywatny]
     end
 
-    subgraph TOPSECRET["🔥 SUPER TAJNE - Zniszczyć po wygenerowaniu kluczy!"]
+    subgraph TOPSECRET["🔥 SUPER TAJNE"]
         P[p = 61<br/>pierwsza liczba pierwsza]
         Q[q = 53<br/>druga liczba pierwsza]
         PHI[φ'n' = 3120<br/>funkcja Eulera]
@@ -308,17 +308,20 @@ flowchart TB
     TOPSECRET -.->|generuje| SECRET
     TOPSECRET -.->|generuje| PUBLIC
 
-    Note1[⚠️ Jeśli ktoś zna p i q,<br/>może obliczyć d i złamać szyfrowanie!]
-    Note2[✅ Znając tylko e i n<br/>NIE można odtworzyć d]
+    Note1["🌍 Wszyscy mogą znać<br/>Publikowane w certyfikatach"]
+    Note2["🔒 Tylko właściciel<br/>Nigdy nie ujawniaj!"]
+    Note3["🔥 Zniszczyć po generowaniu kluczy!<br/>⚠️ Jeśli ktoś zna p, q lub φ(n)<br/>może obliczyć d i złamać szyfrowanie"]
 
-    TOPSECRET -.-> Note1
-    PUBLIC -.-> Note2
+    PUBLIC -.-> Note1
+    SECRET -.-> Note2
+    TOPSECRET -.-> Note3
 
     style PUBLIC fill:#e7f3ff,stroke:#0066cc,stroke-width:2px
     style SECRET fill:#fff4e6,stroke:#ff9800,stroke-width:3px
-    style TOPSECRET fill:#ffe6e6,stroke:#dc3545,stroke-width:4px
-    style Note1 fill:#fff3cd,stroke:#ffc107,stroke-width:2px
-    style Note2 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style TOPSECRET fill:#ffe6e6,stroke:#dc3545,stroke-width:4px,padding:20px,min-width:400px
+    style Note1 fill:#e7f3ff,stroke:#0066cc,stroke-width:2px
+    style Note2 fill:#fff4e6,stroke:#ff9800,stroke-width:2px
+    style Note3 fill:#ffe6e6,stroke:#dc3545,stroke-width:2px
 
     style E fill:#cce5ff,stroke:#0066cc
     style N fill:#cce5ff,stroke:#0066cc
