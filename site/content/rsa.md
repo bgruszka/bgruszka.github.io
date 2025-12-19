@@ -748,7 +748,6 @@ Algorytm Shora (kwantowy) teoretycznie może **złamać RSA w czasie wielomianow
 
 > [!CAUTION] Zagrożenie kwantowe
 > Komputery kwantowe mogą złamać RSA w czasie wielomianowym (algorytm Shora). Choć dziś są za słabe, za 10-20 lat mogą stać się realnym zagrożeniem.
->
 > **Przygotuj się:** NIST standaryzuje już algorytmy post-kwantowe[^3]. Dla długoterminowego bezpieczeństwa rozważ algorytmy odporne na komputery kwantowe (CRYSTALS-Kyber, Dilithium).
 
 ---
