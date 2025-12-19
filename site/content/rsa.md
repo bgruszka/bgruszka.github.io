@@ -584,11 +584,11 @@ To dobre pytanie! Nie możemy przecież wypisać wszystkich liczb pierwszych i w
 **Rozwiązanie:** losowanie + test pierwszości
 
 **Algorytm generowania liczby pierwszej:**
-- [ ] Wylosuj dużą liczbę nieparzystą (np. 1024-bitową)
-- [ ] Wykonaj test pierwszości (np. Miller-Rabin z 40 rundami)
-- [ ] Jeśli test przeszedł → mamy liczbę pierwszą ✓
-- [ ] Jeśli test nie przeszedł → dodaj 2 i testuj ponownie
-- [ ] Powtarzaj aż znajdziesz pierwszą
+1. Wylosuj dużą liczbę nieparzystą (np. 1024-bitową)
+2. Wykonaj test pierwszości (np. Miller-Rabin z 40 rundami)
+3. Jeśli test przeszedł → mamy liczbę pierwszą ✓
+4. Jeśli test nie przeszedł → dodaj 2 i testuj ponownie
+5. Powtarzaj aż znajdziesz pierwszą
 
 **Ile to trwa?**
 
@@ -667,7 +667,6 @@ Są dwa podejścia do generowania liczb losowych:
 
 > [!WARNING] Słaba losowość = katastrofa bezpieczeństwa
 > W 2012 roku grupa badaczy znalazła **12 tysięcy** publicznych kluczy RSA w internecie, które dzieliły wspólne czynniki pierwsze. Dlaczego? Słaba losowość przy generowaniu!
->
 > **Zawsze używaj kryptograficznie bezpiecznych generatorów losowych!**
 
 #### 2. Padding jest krytyczny
