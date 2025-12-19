@@ -1,6 +1,8 @@
 ---
 date: 2025-12-18
 tags: rsa,cryptography,security,encryption,algorithms
+extra:
+  mermaid: true
 ---
 # RSA – czyli jak działa szyfrowanie asymetryczne bez czarnej magii
 
@@ -16,7 +18,7 @@ Jak to zrobić, żeby **tylko odbiorca** mógł ją przeczytać? No właśnie tu
 
 ## O co w ogóle chodzi z RSA?
 
-RSA to **algorytm kryptografii asymetrycznej**. Brzmi groźnie, ale idea jest prosta:
+RSA[^1] to **algorytm kryptografii asymetrycznej**. Brzmi groźnie, ale idea jest prosta:
 
 - masz **dwa klucze**:
   - **publiczny** – możesz go dać całemu światu
@@ -71,7 +73,9 @@ Przykłady:
 - **4** (dzieli się przez 2), **6** (dzieli się przez 2 i 3), **8** (dzieli się przez 2 i 4) – to NIE są liczby pierwsze ✗
 
 Liczby pierwsze to takie "atomy matematyki" – nie da się ich rozłożyć na mniejsze kawałki.
-I właśnie ta właściwość jest fundamentem bezpieczeństwa RSA!
+
+> [!NOTE] Dlaczego liczby pierwsze?
+> Ta właściwość jest **fundamentem bezpieczeństwa RSA**! Liczby pierwsze są łatwe do pomnożenia, ale ich iloczyn jest praktycznie niemożliwy do rozłożenia z powrotem (dla dużych liczb).
 
 **OK, do rzeczy:**
 
@@ -187,7 +191,8 @@ To oznacza, że operacja `m^65537` to tylko:
 - 16 operacji podniesienia do kwadratu
 - 1 mnożenie
 
-Bardzo szybko się liczy! A jednocześnie wystarczająco duże żeby być bezpieczne.
+> [!TIP] Dlaczego 65537 to standard?
+> Bardzo szybko się liczy (tylko dwie jedynki w zapisie binarnym), a jednocześnie jest wystarczająco duże żeby być bezpieczne. To idealny kompromis między wydajnością a bezpieczeństwem!
 
 ### Dla naszego przykładu:
 
@@ -231,6 +236,36 @@ Mówimy, że `d` jest odwrotnością modularną `e` względem φ(n), gdy ich ilo
 Dla małych liczb możemy próbować po kolei, ale dla liczb 1024-bitowych?
 Użylibyśmy **rozszerzonego algorytmu Euklidesa** (Extended Euclidean Algorithm).
 
+<details>
+<summary>🔍 Jak działa rozszerzony algorytm Euklidesa?</summary>
+
+Algorytm znajduje odwrotność modularną w czasie O(log n):
+
+**Krok po kroku:**
+1. Szukamy liczb x, y takich że: `e·x + φ(n)·y = NWD(e, φ(n))`
+2. Jeśli NWD = 1, to x jest odwrotnością modularną
+3. Normalizujemy: `d = x mod φ(n)`
+
+**Przykład dla e=17, φ(n)=3120:**
+```
+3120 = 17 × 183 + 9
+17 = 9 × 1 + 8
+9 = 8 × 1 + 1    <- NWD = 1 ✓
+8 = 1 × 8 + 0
+
+Wsteczna substytucja:
+1 = 9 - 8
+1 = 9 - (17 - 9) = 2×9 - 17
+1 = 2×(3120 - 183×17) - 17
+1 = 2×3120 - 367×17
+
+Więc: 17 × (-367) ≡ 1 (mod 3120)
+d = -367 mod 3120 = 2753 ✓
+```
+
+To skomplikowane, ale na szczęście biblioteki robią to za nas!
+</details>
+
 Na szczęście w Pythonie to proste:
 ```python
 d = pow(e, -1, phi)  # od Pythona 3.8
@@ -249,8 +284,9 @@ Sprawdzenie: (17 * 2753) % 3120 = 46801 % 3120 = 1 ✓
 I voilà:
 - **klucz prywatny** = `(d, n)` → `(2753, 3233)`
 
-**SUPER WAŻNE:** klucz prywatny `d` trzymasz TYLKO dla siebie.
-Jeśli ktoś go zdobędzie = game over, może odczytać wszystkie twoje wiadomości!
+> [!IMPORTANT] Bezpieczeństwo klucza prywatnego
+> Klucz prywatny `d` trzymasz **TYLKO dla siebie**.
+> Jeśli ktoś go zdobędzie = game over, może odczytać wszystkie twoje wiadomości!
 
 ```mermaid
 flowchart TB
@@ -547,11 +583,12 @@ To dobre pytanie! Nie możemy przecież wypisać wszystkich liczb pierwszych i w
 
 **Rozwiązanie:** losowanie + test pierwszości
 
-Algorytm jest prosty:
-1. Wylosuj dużą liczbę (np. 1024-bitową)
-2. Sprawdź czy jest pierwsza
-3. Jeśli nie – spróbuj następnej
-4. Powtarzaj aż znajdziesz pierwszą
+**Algorytm generowania liczby pierwszej:**
+- [ ] Wylosuj dużą liczbę nieparzystą (np. 1024-bitową)
+- [ ] Wykonaj test pierwszości (np. Miller-Rabin z 40 rundami)
+- [ ] Jeśli test przeszedł → mamy liczbę pierwszą ✓
+- [ ] Jeśli test nie przeszedł → dodaj 2 i testuj ponownie
+- [ ] Powtarzaj aż znajdziesz pierwszą
 
 **Ile to trwa?**
 
@@ -577,6 +614,40 @@ dla każdej rundy:
 jeśli wszystkie testy przeszły → n jest prawdopodobnie pierwsza
 ```
 
+<details>
+<summary>🔍 Matematyka za testem Millera-Rabina</summary>
+
+Test wykorzystuje **małe twierdzenie Fermata** i własności pierwiastków pierwotnych:
+
+**Dla liczby pierwszej n:**
+1. Zapisz: `n - 1 = 2^r × d` (gdzie d nieparzyste)
+2. Wybierz losowe `a` z zakresu [2, n-2]
+3. Oblicz: `x = a^d mod n`
+4. Sprawdź:
+   - Jeśli `x = 1` lub `x = n-1` → możliwe, że pierwsza
+   - Powtórz `r-1` razy: `x = x² mod n`
+   - Jeśli któreś `x = n-1` → możliwe, że pierwsza
+   - W przeciwnym razie → **na pewno złożona**
+
+**Przykład dla n=221:**
+```
+221 - 1 = 220 = 4 × 55 = 2² × 55
+r=2, d=55
+
+Losujemy a=174:
+x = 174^55 mod 221 = 47
+47 ≠ 1 i 47 ≠ 220
+
+x = 47² mod 221 = 168
+168 ≠ 220
+
+Test nie przeszedł → 221 jest złożone! ✓
+(Faktycznie: 221 = 13 × 17)
+```
+
+Kluczowa własność: liczba złożona ma **maksymalnie 25% szans** oszukania testu w jednej rundzie. Po 40 rundach szansa: (0.25)^40 ≈ 10⁻²⁴ – praktycznie niemożliwe!
+</details>
+
 ### O czym trzeba pamiętać przy implementacji?
 
 #### 1. Źródło losowości ma znaczenie!
@@ -594,7 +665,10 @@ Są dwa podejścia do generowania liczb losowych:
 - nieco wolniejsze
 - ✅ **jedyna opcja do prawdziwych kluczy**
 
-> Przykład: w 2012 roku grupa badaczy znalazła **12 tysięcy** publicznych kluczy RSA w internecie, które dzieliły wspólne czynniki pierwsze. Dlaczego? Słaba losowość przy generowaniu!
+> [!WARNING] Słaba losowość = katastrofa bezpieczeństwa
+> W 2012 roku grupa badaczy znalazła **12 tysięcy** publicznych kluczy RSA w internecie, które dzieliły wspólne czynniki pierwsze. Dlaczego? Słaba losowość przy generowaniu!
+>
+> **Zawsze używaj kryptograficznie bezpiecznych generatorów losowych!**
 
 #### 2. Padding jest krytyczny
 
@@ -613,7 +687,8 @@ Atakujący może zgadywać wiadomości i porównywać wyniki!
 - ta sama wiadomość za każdym razem daje **inny** szyfrogram
 - dodatkowo chroni przed innymi atakami
 
-W prawdziwych systemach **zawsze** używaj paddingu!
+> [!WARNING] Nigdy nie używaj "textbook RSA" w produkcji!
+> Podstawowy RSA bez paddingu jest **podatny na ataki**. Zawsze używaj OAEP lub innego sprawdzonego schematu paddingu. To nie jest opcjonalne – to wymóg bezpieczeństwa!
 
 #### 3. Timing attacks – bo czas też gada
 
@@ -625,7 +700,8 @@ Atakujący mierząc **czas deszyfrowania** tysięcy wiadomości może **odtworzy
 - operacje w stałym czasie (constant-time algorithms)
 - blinding – losowe przekształcenie przed deszyfrowaniem
 
-Dlatego **nie piszemy krypto sami** – używamy sprawdzonych bibliotek.
+> [!WARNING] Nie implementuj kryptografii sam!
+> Timing attacks to tylko jeden z wielu zagrożeń. **Używaj sprawdzonych bibliotek** kryptograficznych (OpenSSL, libsodium, itd.) zamiast pisać własne implementacje. Eksperci spędzili lata chroniąc te biblioteki przed atakami!
 
 ---
 
@@ -638,7 +714,7 @@ W naszym przykładzie używałem małych liczb (p=61, q=53), ale w rzeczywistoś
 | Rozmiar klucza | Status | Szacowany czas złamania |
 |----------------|--------|-------------------------|
 | **512 bitów** | ❌ Niezabezpieczone | Złamane w 1999 (RSA-155) |
-| **768 bitów** | ❌ Niezabezpieczone | Złamane w 2009 (RSA-768, 2000 CPU-lat) |
+| **768 bitów** | ❌ Niezabezpieczone | Złamane w 2009 (RSA-768, 2000 CPU-lat)[^2] |
 | **1024 bity** | ⚠️ Przestarzałe | Możliwe dla dużych organizacji |
 | **2048 bitów** | ✅ **Minimum dzisiaj** | Bezpieczne do ~2030 |
 | **3072 bity** | ✅ Zalecane | Długoterminowe bezpieczeństwo |
@@ -671,7 +747,10 @@ Algorytm Shora (kwantowy) teoretycznie może **złamać RSA w czasie wielomianow
 - możliwe że RSA stanie się podatne
 - dlatego już teraz rozwija się **kryptografia post-kwantowa** (np. CRYSTALS-Kyber, Dilithium)
 
-NIST właśnie standaryzuje algorytmy odporne na komputery kwantowe. Przyszłość krypto będzie wyglądać inaczej!
+> [!CAUTION] Zagrożenie kwantowe
+> Komputery kwantowe mogą złamać RSA w czasie wielomianowym (algorytm Shora). Choć dziś są za słabe, za 10-20 lat mogą stać się realnym zagrożeniem.
+>
+> **Przygotuj się:** NIST standaryzuje już algorytmy post-kwantowe[^3]. Dla długoterminowego bezpieczeństwa rozważ algorytmy odporne na komputery kwantowe (CRYSTALS-Kyber, Dilithium).
 
 ---
 
@@ -735,3 +814,13 @@ weryfikacja = podpis^e mod n == hash(wiadomość)
 ```
 
 Dzięki temu możesz udowodnić, że TO TY napisałeś daną wiadomość (bo tylko ty masz klucz prywatny).
+
+---
+
+## Przypisy
+
+[^1]: RSA pochodzi od nazwisk trzech twórców: **R**on **R**ivest, **A**di **S**hamir i Leonard **A**dleman, którzy opublikowali algorytm w 1977 roku. Ciekawostka: brytyjski matematyk Clifford Cocks wynalazł podobny system kilka lat wcześniej (1973), ale jego praca była tajna!
+
+[^2]: RSA-768 (232 cyfry dziesiętne) zostało złamane w 2009 roku przez międzynarodowy zespół badaczy. Projekt wymagał około 2000 lat czasu CPU na komputerach z tamtego okresu. To pokazuje, że rozmiar klucza ma **kluczowe** znaczenie dla bezpieczeństwa.
+
+[^3]: W 2024 roku NIST (National Institute of Standards and Technology) opublikował pierwsze standardy kryptografii post-kwantowej: FIPS 203 (ML-KEM, wcześniej CRYSTALS-Kyber), FIPS 204 (ML-DSA, wcześniej CRYSTALS-Dilithium) i FIPS 205 (SLH-DSA, wcześniej SPHINCS+). To algorytmy odporne na ataki komputerów kwantowych.
