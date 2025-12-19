@@ -31,6 +31,35 @@ Można powiedzieć, że to taka kłódka, do której każdy ma klucz do zamykani
 
 No dobra, tu zaczyna się matematyka, ale spokojnie – bez paniki.
 
+```mermaid
+flowchart TD
+    Start([🚀 START<br/>Generowanie kluczy RSA])
+
+    Start --> P1[Wybierz dwie duże liczby pierwsze<br/>p = 61, q = 53]
+
+    P1 --> P2[Oblicz n = p × q<br/>n = 61 × 53 = 3233]
+
+    P2 --> P3[Oblicz funkcję Eulera<br/>φ'n' = 'p-1' × 'q-1'<br/>φ'n' = 60 × 52 = 3120]
+
+    P3 --> P4[Wybierz wykładnik publiczny e<br/>względnie pierwszy z φ'n'<br/>e = 17]
+
+    P4 --> P5[Oblicz wykładnik prywatny d<br/>odwrotność modularna e mod φ'n'<br/>d = 2753]
+
+    P5 --> Check{Sprawdzenie:<br/>'e × d' mod φ'n' = 1?}
+
+    Check -->|✅ TAK<br/>17 × 2753 mod 3120 = 1| Success[✅ GOTOWE!<br/><br/>🔓 Klucz publiczny: 'e, n' = '17, 3233'<br/>🔐 Klucz prywatny: 'd, n' = '2753, 3233']
+
+    Check -->|❌ NIE| P4
+
+    Success --> End([🎉 Klucze wygenerowane])
+
+    style Start fill:#e1f5ff,stroke:#0066cc,stroke-width:3px
+    style Success fill:#d4edda,stroke:#28a745,stroke-width:3px
+    style End fill:#d4edda,stroke:#28a745,stroke-width:3px
+    style Check fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style P5 fill:#ffe6e6,stroke:#dc3545,stroke-width:2px
+```
+
 ### Krok 1: wybieramy dwie liczby pierwsze
 
 **Ale czekaj – co to w ogóle jest liczba pierwsza?**
@@ -223,6 +252,46 @@ I voilà:
 **SUPER WAŻNE:** klucz prywatny `d` trzymasz TYLKO dla siebie.
 Jeśli ktoś go zdobędzie = game over, może odczytać wszystkie twoje wiadomości!
 
+```mermaid
+flowchart TB
+    subgraph PUBLIC["🌍 PUBLICZNE - Wszyscy mogą znać"]
+        E[e = 17<br/>wykładnik publiczny]
+        N[n = 3233<br/>moduł]
+    end
+
+    subgraph SECRET["🔒 TAJNE - Tylko właściciel"]
+        D[d = 2753<br/>wykładnik prywatny]
+    end
+
+    subgraph TOPSECRET["🔥 SUPER TAJNE - Zniszczyć po wygenerowaniu kluczy!"]
+        P[p = 61<br/>pierwsza liczba pierwsza]
+        Q[q = 53<br/>druga liczba pierwsza]
+        PHI[φ'n' = 3120<br/>funkcja Eulera]
+    end
+
+    TOPSECRET -.->|generuje| SECRET
+    TOPSECRET -.->|generuje| PUBLIC
+
+    Note1[⚠️ Jeśli ktoś zna p i q,<br/>może obliczyć d i złamać szyfrowanie!]
+    Note2[✅ Znając tylko e i n<br/>NIE można odtworzyć d]
+
+    TOPSECRET -.-> Note1
+    PUBLIC -.-> Note2
+
+    style PUBLIC fill:#e7f3ff,stroke:#0066cc,stroke-width:2px
+    style SECRET fill:#fff4e6,stroke:#ff9800,stroke-width:3px
+    style TOPSECRET fill:#ffe6e6,stroke:#dc3545,stroke-width:4px
+    style Note1 fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Note2 fill:#d4edda,stroke:#28a745,stroke-width:2px
+
+    style E fill:#cce5ff,stroke:#0066cc
+    style N fill:#cce5ff,stroke:#0066cc
+    style D fill:#ffe4cc,stroke:#ff9800
+    style P fill:#ffcccc,stroke:#dc3545
+    style Q fill:#ffcccc,stroke:#dc3545
+    style PHI fill:#ffcccc,stroke:#dc3545
+```
+
 ---
 
 ## Szyfrowanie – w końcu!
@@ -245,6 +314,45 @@ Potem każdą liczbę szyfrujemy osobno wzorem:
 
 ```
 c = m^e mod n
+```
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant A as Alice
+    participant B as Bob
+    participant S as 🌍 Świat<br/>(podsłuchujący)
+
+    Note over B: Generowanie kluczy RSA
+    B->>B: Wybierz p=61, q=53
+    B->>B: Oblicz n = 61×53 = 3233
+    B->>B: Oblicz φ(n) = 60×52 = 3120
+    B->>B: Wybierz e = 17
+    B->>B: Oblicz d = 2753
+
+    Note over B: Klucz publiczny: (e=17, n=3233)<br/>Klucz prywatny: (d=2753, n=3233)
+
+    B->>A: Publikuje klucz publiczny (17, 3233)
+    B->>S: Publikuje klucz publiczny (17, 3233)
+
+    Note over A: Alice ma wiadomość "HI"
+    A->>A: Konwersja ASCII: H=72, I=73
+
+    Note over A: Szyfrowanie każdej litery
+    A->>A: c₁ = 72^17 mod 3233 = 3000
+    A->>A: c₂ = 73^17 mod 3233 = 1486
+
+    A->>B: Wysyła [3000, 1486]
+    A->>S: 👀 Świat widzi [3000, 1486]
+
+    Note over S: ❌ Bez klucza prywatnego d<br/>NIE może odszyfrować!
+
+    Note over B: Deszyfrowanie kluczem prywatnym
+    B->>B: m₁ = 3000^2753 mod 3233 = 72
+    B->>B: m₂ = 1486^2753 mod 3233 = 73
+    B->>B: Konwersja ASCII: 72='H', 73='I'
+
+    Note over B: ✅ Bob odczytał "HI"
 ```
 
 **Przykład krok po kroku:**
@@ -316,6 +424,44 @@ To niewygodne i może sprawiać problemy przy transmisji.
 ### Rozwiązanie: Base64
 
 **Base64** to sposób kodowania danych binarnych jako tekst (używając tylko 64 znaków: A-Z, a-z, 0-9, +, /).
+
+```mermaid
+flowchart TD
+    Start([📝 START: Tekst 'HI'])
+
+    Start --> ASCII[Konwersja ASCII<br/>'H' → 72<br/>'I' → 73]
+
+    ASCII --> RSA[Szyfrowanie RSA<br/>c₁ = 72^17 mod 3233 = 3000<br/>c₂ = 73^17 mod 3233 = 1486]
+
+    RSA --> HEX[Konwersja do hexadecimal<br/>3000₁₀ = 0x0BB8<br/>1486₁₀ = 0x05CE]
+
+    HEX --> BYTES[Bajty: 0B B8 05 CE<br/>'4 bajty razem']
+
+    BYTES --> BIN[Binary:<br/>00001011 10111000 00000101 11001110]
+
+    BIN --> GROUP[Grupowanie po 6 bitów<br/>000010 111011 100000 000101 110011 10----]
+
+    GROUP --> PAD[Dopełnienie zerami ostatniej grupy<br/>000010 111011 100000 000101 110011 100000]
+
+    PAD --> CONV[Konwersja do znaków base64<br/>000010→C, 111011→7, 100000→g<br/>000101→F, 110011→z, 100000→g]
+
+    CONV --> PADDING{Padding?<br/>4 bajty = niepełny blok}
+
+    PADDING -->|Dodaj '==' dla wyrównania| RESULT[✅ Wynik: 'C7gFzg==']
+
+    RESULT --> End([🌐 Gotowe do wysłania!])
+
+    Info[💡 Base64 używa tylko 64 znaków:<br/>A-Z, a-z, 0-9, +, /<br/>Bezpieczne dla każdego protokołu!]
+
+    RESULT -.-> Info
+
+    style Start fill:#e1f5ff,stroke:#0066cc,stroke-width:3px
+    style RESULT fill:#d4edda,stroke:#28a745,stroke-width:3px
+    style End fill:#d4edda,stroke:#28a745,stroke-width:3px
+    style PADDING fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Info fill:#f0f0f0,stroke:#6c757d,stroke-width:2px
+    style RSA fill:#ffe6e6,stroke:#dc3545,stroke-width:2px
+```
 
 **Proces krok po kroku:**
 
