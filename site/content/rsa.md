@@ -253,13 +253,13 @@ Chcę zaszyfrować słowo **"HI"**:
 
 ```
 1. 'H' → ASCII: 72
-   c₁ = 72^17 mod 3233 = 1611
+   c₁ = 72^17 mod 3233 = 3000
 
 2. 'I' → ASCII: 73
-   c₂ = 73^17 mod 3233 = 2850
+   c₂ = 73^17 mod 3233 = 1486
 ```
 
-Zaszyfrowana wiadomość: **[1611, 2850]**
+Zaszyfrowana wiadomość: **[3000, 1486]**
 
 Wysyłasz te liczby do odbiorcy. Każdy może je zobaczyć, ale **bez klucza prywatnego nie odszyfrują** ;-)
 
@@ -285,11 +285,11 @@ m = c^d mod n
 Dla naszego przykładu z "HI":
 
 ```
-1. c₁ = 1611
-   m₁ = 1611^2753 mod 3233 = 72 → 'H'
+1. c₁ = 3000
+   m₁ = 3000^2753 mod 3233 = 72 → 'H'
 
-2. c₂ = 2850
-   m₂ = 2850^2753 mod 3233 = 73 → 'I'
+2. c₂ = 1486
+   m₂ = 1486^2753 mod 3233 = 73 → 'I'
 ```
 
 Odzyskaliśmy tekst: **"HI"**
@@ -300,7 +300,7 @@ Magia? Nie. Matematyka :-)
 
 ## A jak to przesłać przez Internet? Base64 do akcji!
 
-OK, mamy zaszyfrowaną wiadomość: **[1611, 2850]**
+OK, mamy zaszyfrowaną wiadomość: **[3000, 1486]**
 
 Ale jak to wysłać mailem, przez API, w JSON-ie? Te liczby mogą być **OGROMNE** (setki cyfr dla prawdziwego RSA).
 
@@ -321,38 +321,38 @@ To niewygodne i może sprawiać problemy przy transmisji.
 
 ### Przykład dla "HI":
 
-Mamy zaszyfrowaną wiadomość: **[1611, 2850]**
+Mamy zaszyfrowaną wiadomość: **[3000, 1486]**
 
 ```
 Krok 1: Konwertuj każdą liczbę na bajty (hexadecimal)
-   1611 (decimal) = 0x064B = [06 4B] (2 bajty)
-   2850 (decimal) = 0x0B22 = [0B 22] (2 bajty)
+   3000 (decimal) = 0x0BB8 = [0B B8] (2 bajty)
+   1486 (decimal) = 0x05CE = [05 CE] (2 bajty)
 
 Krok 2: Połącz wszystkie bajty w jeden ciąg
-   [06 4B 0B 22] (4 bajty razem)
+   [0B B8 05 CE] (4 bajty razem)
 
 Krok 3: Bajty → base64
-   Bajty:    06    4B    0B    22
-   Binary:   00000110 01001011 00001011 00100010
+   Bajty:    0B    B8    05    CE
+   Binary:   00001011 10111000 00000101 11001110
 
    Grupujemy po 6 bitów (base64 używa 6-bitowych grup):
-   000001 100100 101100 001011 001000 10
+   000010 111011 100000 000101 110011 10
 
    Dopełniamy ostatnią grupę zerami:
-   000001 100100 101100 001011 001000 100000
+   000010 111011 100000 000101 110011 100000
 
    Konwertujemy każdą 6-bitową grupę na znak base64:
-   000001 → B
-   100100 → k
-   101100 → s
-   001011 → L
-   001000 → I
+   000010 → C
+   111011 → 7
+   100000 → g
+   000101 → F
+   110011 → z
    100000 → g
 
    Dodajemy padding (==) bo base64 pracuje w 3-bajtowych blokach:
    - 4 bajty = 3 bajty (pełny blok) + 1 bajt (niepełny)
    - 1 bajt → 2 znaki + '==' (padding do pełnego bloku)
-   "BksLIg=="
+   "C7gFzg=="
 ```
 
 **Podsumowanie dla "HI":**
@@ -360,16 +360,16 @@ Krok 3: Bajty → base64
 ```
 Oryginał:       "HI"
 ASCII:          [72, 73]
-Zaszyfrowane:   [1611, 2850]
-Bajty (hex):    [06 4B 0B 22]
-Base64:         "BksLIg=="
+Zaszyfrowane:   [3000, 1486]
+Bajty (hex):    [0B B8 05 CE]
+Base64:         "C7gFzg=="
 ```
 
-Teraz możesz wysłać **"BksLIg=="** przez e-mail, JSON, gdziekolwiek!
+Teraz możesz wysłać **"C7gFzg=="** przez e-mail, JSON, gdziekolwiek!
 
 Odbiorca robi proces odwrotny:
 ```
-"BksLIg==" → [06 4B 0B 22] → [1611, 2850] → deszyfruj → [72, 73] → "HI"
+"C7gFzg==" → [0B B8 05 CE] → [3000, 1486] → deszyfruj → [72, 73] → "HI"
 ```
 
 ### Dlaczego to ważne?
