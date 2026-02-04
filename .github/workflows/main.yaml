@@ -29,7 +29,7 @@ jobs:
         run: cargo install marmite
 
       - name: Build site 🏗️
-        run: marmite . docs --debug
+        run: cd site && marmite . ../docs --debug
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
