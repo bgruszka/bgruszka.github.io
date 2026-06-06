@@ -181,7 +181,7 @@ Tokenizator BPE dzieli tekst na podstawie **częstotliwości występowania** w d
 To znaczy, że model nie uczy się morfologii „od strony" – on uczy się jej pośrednio, przez statystykę. I jakoś mu to działa ;-)
 
 > [!TIP]
-> **Zabawa dla was:** Potraficie rozbić te słowa na morfemy? Piszcie w komentarzach!
+> **Zabawa dla was:** Potraficie rozbić te słowa na morfemy?
 > - *nieprawdopodobny*
 > - *najpiękniejszy*
 > - *przeczytaliśmy*
@@ -252,8 +252,6 @@ Sprawdźcie się – które zdania są składniowo poprawne?[^1]
 3. Szczeka pies na listonosza.
 4. Pies listonosza na szczeka.
 5. Czy pies szczeka na listonosza?
-
-Nie podpowiedziałem, co jest poprawne – przemyślcie to sami i dajcie znać w komentarzach, jak wam poszło ;-)
 
 ---
 
@@ -352,7 +350,7 @@ Jeśli semantyka pyta „co to znaczy?", pragmatyka pyta: **„co autor miał na
 Semantycznie: informacja o temperaturze w pomieszczeniu.  
 Pragmatycznie: **„Zamknij okno!"** albo **„Zwiększ ogrzewanie!"** albo **„Daj mi koc."**
 
-Wiesz, że tak robicie. Każdy z was ;-) I każdy z was rozumie, kiedy ktoś mówi „Zimno tu" w momencie, gdy stoi przy otwartym oknie – nie pytasz o stopnie Celsjusza, tylko zamykasz okno.
+Każdy z was zrozumie, że kiedy ktoś mówi „Zimno tu" w momencie, gdy stoi przy otwartym oknie – nie pytasz o stopnie Celsjusza, tylko zamykasz okno.
 
 **Scenka 2: „Mógłbyś podać sól?"**
 
@@ -422,7 +420,7 @@ Ale z drugiej strony – GPT-4 i nowsze modele radzą sobie coraz lepiej. Dlacze
 >
 > *„No gratulacje, znowu strzeliłem sobie w palca gwoździem!"*
 >
-> Zobaczcie, czy model zauważy, że w drugim przypadku „gratulacje" to ironia, czy zacznie wam gratulować. Dajcie znać w komentarzach, jak poszło! ;-)
+> Zobaczcie, czy model zauważy, że w drugim przypadku „gratulacje" to ironia, czy jednak zacznie wzywać pogotowie?
 
 ---
 
