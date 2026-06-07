@@ -447,7 +447,10 @@ graph LR
 ```
 
 ### Co dalej?
-- ** Semiotyka – dlaczego LLM nie "myśli", ale jednak coś znaczy
+
+W kolejnym wpisie zmieniamy perspektywę – zamiast patrzeć na warstwy języka, patrzymy na samą naturę znaków i znaczenia:
+
+- **[Semiotyka – dlaczego LLM nie "myśli", ale jednak coś znaczy](semiotyka-a-llm.html)**
 
 <!--W kolejnych wpisach tej serii wejdziemy głębiej w każdą z tych warstw:
 
