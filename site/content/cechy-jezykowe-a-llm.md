@@ -446,9 +446,10 @@ graph LR
     end
 ```
 
-<!--### Co dalej?
+### Co dalej?
+- ** Semiotyka – dlaczego LLM nie "myśli", ale jednak coś znaczy
 
-W kolejnych wpisach tej serii wejdziemy głębiej w każdą z tych warstw:
+<!--W kolejnych wpisach tej serii wejdziemy głębiej w każdą z tych warstw:
 
 - **Fonetyka i LLM** – gdzie kończy się tekst, a zaczyna mowa? Jak modele speech (Whisper, TTS) łączą dźwięk z językiem?
 - **Morfologia i składnia w LLM** – czy model naprawdę rozpoznaje strukturę, czy tylko statystykę?
