@@ -312,7 +312,7 @@ Każdy prompt dotyczy tego samego tematu (grawitacja). Ale każdy **zmienia ram�
 | "...pięciolatkowi" | Odbiorca, prostota języka | Edukacyjna, dostosowana do wieku |
 | "...w stylu Szekspira" | Gatunek, forma, styl | Literacka, artystyczna |
 
-To jest dokładnie to, co Picca nazywa **"semiotyczną umową"** (semiotic contract). Kiedy tworzycie prompt, nie "proszcie o informację" - **ustanawiacie warunki, w jakich znaczenie będzie konstruowane**. Prosicie o grawitację w trybie Szekspira? Otrzymujecie hybrydę fizyki i poezji. To nie jest "prawdziwa" grawitacja ani "prawdziwy" Szekspir - to jest **semiotyczny kolaż**, nowa konfiguracja znaków.
+To jest dokładnie to, co Picca nazywa **"semiotyczną umową"** (semiotic contract). Kiedy tworzycie prompt, nie "prosicie o informację" - **ustanawiacie warunki, w jakich znaczenie będzie konstruowane**. Prosicie o grawitację w trybie Szekspira? Otrzymujecie hybrydę fizyki i poezji. To nie jest "prawdziwa" grawitacja ani "prawdziwy" Szekspir - to jest **semiotyczny kolaż**, nowa konfiguracja znaków.
 
 > [!TIP]
 > **Eksperyment bonusowy:** Spróbujcie: *"Wyjaśnij pojęcie entropii używając metafor z bajek."* Zobaczycie, jak LLM łączy dwie zupełnie różne strefy semiotyczne - fizykę i baśnie. To jest właśnie to, co semiotyka nazywa **translacją między kodami kulturowymi**.
