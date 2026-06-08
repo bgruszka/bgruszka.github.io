@@ -992,8 +992,8 @@ Problem? **Każde słowo jest w takiej samej odległości od każdego innego.** 
 ```mermaid
 graph LR
     subgraph "One-hot: wszystko jest tak samo daleko"
-        O1["kot<br/>[0,0,1,0]"] ---|odległość = √2| O2["pies<br/>[0,1,0,0]"]
-        O1 ---|odległość = √2| O3["samochód<br/>[1,0,0,0]"]
+        O1["kot<br/>[0,0,1,0]"] ---|"="| O2["pies<br/>[0,1,0,0]"]
+        O1 ---|"="| O3["samochód<br/>[1,0,0,0]"]
     end
     
     style O1 fill:#9999ff,color:#fff
@@ -1003,9 +1003,9 @@ graph LR
 
 ### Word2Vec: "Pokaż mi twoich sąsiadów, a powiem ci, kim jesteś"
 
-Word2Vec opiera się na genialnej intuicji lingwistycznej: **słowa, które występują w podobnym kontekstie, mają podobne znaczenie.**
+Word2Vec opiera się na genialnej intuicji lingwistycznej: **słowa, które występują w podobnym kontekście, mają podobne znaczenie.**
 
-Jeśli widzisz: "___ biega po parku i łapie patnie", to co tam wpadnie? Pies? Kot? Raczej nie "samochód" ani "demokracja". Kontekst definiuje słowo.
+Jeśli widzisz: "___ biega po parku i goni gołębie", to co tam wpadnie? Pies? Kot? Raczej nie "samochód" ani "demokracja". Kontekst definiuje słowo.
 
 ```mermaid
 graph TD
@@ -1130,6 +1130,50 @@ To jest to, o czym mówiliśmy w [pierwszym poście](cechy-jezykowe-a-llm.html) 
 
 ### Word2Vec w kodzie
 
+Najpierw wytrenujmy własny model na małym korpusie, żeby zobaczyć jak to działa od zera:
+
+```python
+from gensim.models import Word2Vec
+
+corpus = [
+    ["kot", "siedzi", "na", "macie", "i", "śpi"],
+    ["pies", "siedzi", "na", "dywanie", "i", "śpi"],
+    ["kot", "biega", "po", "pokoju"],
+    ["pies", "biega", "po", "parku"],
+    ["kot", "i", "pies", "bawią", "się", "w", "ogrodzie"],
+    ["kot", "je", "karmę", "z", "miski"],
+    ["pies", "je", "karmę", "z", "miski"],
+    ["kot", "łapie", "mysz", "w", "domu"],
+    ["pies", "goni", "kota", "po", "ogrodzie"],
+    ["ptak", "siedzi", "na", "gałęzi", "drzewa"],
+    ["ryba", "pływa", "w", "akwarium"],
+    ["samochód", "jeździ", "po", "drodze"],
+    ["rower", "jeździ", "po", "ścieżce"],
+    ["kot", "mruczy", "gdy", "głaszczesz", "go"],
+    ["pies", "merda", "ogonem", "gdy", "widzi", "pana"],
+]
+
+model = Word2Vec(
+    sentences=corpus,
+    vector_size=10,   # wymiar wektora (mały = edukacyjny)
+    window=3,         # rozmiar okna kontekstowego
+    min_count=1,      # ignoruj słowa rzadsze niż N
+    sg=0,             # 0 = CBOW, 1 = Skip-gram
+    epochs=200,       # ile przejść po danych
+)
+
+print(model.wv.most_similar("kot", topn=3))
+# [('pies', 0.96), ('śpi', 0.95), ('na', 0.95)]
+
+print(model.wv.similarity("kot", "pies"))       # ~0.96
+print(model.wv.similarity("kot", "samochód"))   # ~0.83
+```
+
+> [!NOTE]
+> Zauważcie: nasz korpus jest MALUTKI (15 zdań), więc wyniki są dalekie od idealnych — "kot" i "samochód" mają aż 0.83 podobieństwa, co jest bez sensu. Ale model poprawnie stawia "pies" najbliżej "kot"! Na prawdziwych korpusach (miliardy zdań) te wektory stają się bardzo dokładne.
+
+A tak korzystamy z **gotowego modelu** wytrenowanego na miliardach słów:
+
 ```python
 from gensim.downloader import load
 
@@ -1190,6 +1234,100 @@ graph LR
 | **Kontekst** | Brak | Uchwycony przez okno kontekstowe |
 | **Analogie** | Nie ma | Działają (król - mężczyzna + kobieta ≈ królowa) |
 
+### Czy Word2Vec potrafi generować tekst?
+
+Nie. Word2Vec tworzy **mapę znaczeń** — mówi ci, że "kot" jest blisko "pies", ale nie potrafi ułożyć z tego zdania. To jak słownik synonimów: wiesz co jest podobne, ale nie napiszesz wiersza.
+
+Ale... co jeśli połączymy Word2Vec z łańcuchami Markowa? Łańcuch Markowa wybiera następne słowo na podstawie częstotliwości. A jeśli zamiast losować równie, sprawimy, że słowa bardziej podobne do kontekstu będą miały większą szansę?
+
+```python
+from gensim.models import Word2Vec
+import numpy as np
+from collections import defaultdict
+import random
+
+corpus = [
+    "kot siedzi na macie i śpi",
+    "pies siedzi na dywanie i śpi",
+    "kot biega po pokoju",
+    "pies biega po parku",
+    "kot i pies bawią się w ogrodzie",
+    "kot je karmę z miski",
+    "pies je karmę z miski",
+    "kot łapie mysz w domu",
+    "pies goni kota po ogrodzie",
+    "ptak siedzi na gałęzi drzewa",
+    "kot patrzy przez okno i mruczy",
+    "pies szczeka na listonosza",
+    "kot śpi cały dzień na kanapie",
+]
+
+tokenized = [sentence.split() for sentence in corpus]
+
+w2v_model = Word2Vec(sentences=tokenized, vector_size=10, window=3, min_count=1, epochs=200)
+
+# budujemy macierz przejść (jak w łańcuchach Markowa)
+transitions = defaultdict(list)
+for sentence in tokenized:
+    for i in range(len(sentence) - 1):
+        transitions[sentence[i]].append(sentence[i + 1])
+
+def generate(start, length=6):
+    words = [start]
+    for _ in range(length):
+        current = words[-1]
+        if current not in transitions:
+            break
+
+        candidates = transitions[current]
+
+        # uśredniony wektor ostatnich słów = kontekst
+        context_vector = np.mean(
+            [w2v_model.wv[w] for w in words[-3:] if w in w2v_model.wv],
+            axis=0,
+        )
+
+        # punktujemy kandydatów za podobieństwo do kontekstu
+        scored = []
+        for candidate in candidates:
+            if candidate in w2v_model.wv:
+                similarity = np.dot(context_vector, w2v_model.wv[candidate]) / (
+                    np.linalg.norm(context_vector) * np.linalg.norm(w2v_model.wv[candidate]) + 1e-8
+                )
+                scored.append((candidate, similarity))
+
+        if scored:
+            # losujemy, ale z wagami — podobne słowa mają większą szansę
+            weights = [score + 1 for _, score in scored]
+            chosen = random.choices([w for w, _ in scored], weights=weights, k=1)[0]
+            words.append(chosen)
+        else:
+            words.append(random.choice(candidates))
+    return " ".join(words)
+
+for _ in range(5):
+    print(generate("kot"))
+```
+
+```
+kot siedzi na macie i śpi
+kot patrzy przez okno i mruczy
+kot je karmę z miski
+kot śpi cały dzień na kanapie
+kot łapie mysz w domu
+```
+
+Nie jest to Szekspir, ale teksty są bardziej spójne niż czysty losowy Markow. Idea jest prosta:
+
+1. Łańcuch Markowa daje **kandydatów** na następne słowo
+2. Word2Vec **punktuje** kandydatów na podstawie podobieństwa do kontekstu
+3. Wybieramy losowo, ale z **obciążeniem** — słowa bardziej pasujące mają większą szansę
+
+To jest malutki krok w kierunku tego, co robią dzisiejsze LLM-y. One też przewidują następne słowo, ale zamiast prostej macierzy przejścia mają wielowarstwowe sieci Transformer z mechanizmem uwagi. Tam "punktowanie kandydatów" jest o wiele, wiele bardziej zaawansowane.
+
+> [!IMPORTANT]
+> **Kluczowa różnica:** Word2Vec daje każdemu słowu JEDEN wektor. Ale "zamek" w "zamek w drzwiach" i "zamek na wzgórzu" to zupełnie inne znaczenia! Word2Vec nie rozróżnia — dlatego w następnym wpisie wejdziemy w Transformer-y, gdzie **kontekst zmienia znaczenie** każdego słowa.
+
 ---
 
 ## Podsumowanie - cała droga w jednym miejscu
@@ -1202,7 +1340,7 @@ Oto nasza mapa drogowa, od cięcia tekstu do geometrii znaczeń:
 | **BoW / TF-IDF** | Liczy słowa, waży rzadkością | Nie | Ignoruje kolejność |
 | **N-gramy** | Patrzy na sekwencje słów | Lokalny (2-3 słowa) | Krótki kontekst, szybko rosnący słownik |
 | **Naive Bayes** | Klasyfikuje na podstawie prawdopodobieństwa | Nie (słowa "niezależne") | Nie łapie zależności między słowami |
-| **Word2Vec** | Zamienia słowa w wektory znaczeniowe | Tak (okno kontekstowe) | Jedno słowo = jeden wektor (polysemy?) |
+| **Word2Vec** | Zamienia słowa w wektory znaczeniowe | Tak (okno kontekstowe) | Jedno słowo = jeden wektor (ignoruje wieloznaczność) |
 
 ```mermaid
 graph TD
@@ -1225,7 +1363,7 @@ graph TD
 I kluczowa perspektywa: **z każdej z tych metod LLM wziął coś dla siebie.**
 
 - **Tokenizacja (BPE)** to pierwszy krok pipeline'u każdego LLM. ChatGPT tnie wasz tekst na tokeny ZANIM cokolwiek z nim zrobi.
-- **TF-IDF i BoW** to fundamenty myślenia o tekście jako o liczbach. Bez tego pomysłu, że słowa można "policzyć", nie byłoby representation learning.
+- **TF-IDF i BoW** to fundamenty myślenia o tekście jako o liczbach. Bez tego pomysłu, że słowa można "policzyć", nie byłoby uczenia reprezentacji (representation learning).
 - **N-gramy i łańcuchy Markowa** to pierwowzór przewidywania następnego tokena. To jest dokładnie to, co robi LLM - tylko że LLM ma kontekst na tysiące tokenów, nie na 2-3.
 - **Naive Bayes** pokazał, że probabilistyczne podejście do tekstu działa zaskakująco dobrze. LLM też jest modelem probabilistycznym - przewiduje prawdopodobieństwo następnego tokena.
 - **Word2Vec** to przodek tego, co dziś nazywamy "embedding layer" w Transformerach. GPT nie używa już Word2Vec jako osobnego kroku, ale jego warstwa embeddingowa realizuje tę samą ideę: token → wektor.
@@ -1237,7 +1375,7 @@ I kluczowa perspektywa: **z każdej z tych metod LLM wziął coś dla siebie.**
 
 ---
 
-Jeśli dotarliście aż tu - **dzięki!** ;-) Wiem, że tego posta jest dużo, ale chciałem, żeby ta droga od "tnięcia tekstu" do "wektorów znaczeń" była pełna i zrozumiała.
+Wiem, że tego posta jest dużo, ale chciałem, żeby ta droga od "tnięcia tekstu" do "wektorów znaczeń" była pełna i zrozumiała.
 
 Mam nadzieję, że chociaż kilka razy powiecie "aha!". Jeśli coś jest niejasne - **napiszcie w komentarzach**, postaram się wyjaśnić. A jeśli macie lepsze przykłady analogii Word2Vec - tym bardziej dajcie znać.
 
