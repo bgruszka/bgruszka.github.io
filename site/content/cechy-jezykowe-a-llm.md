@@ -168,8 +168,8 @@ graph LR
     subgraph "Lingwista widzi:"
         A["nie-szczęśliw-y"] --> A1["nie + szczęśliw + y"]
     end
-    subgraph "LLM widzi (tokenizacja BPE):"
-        B["nie-szczęśliw-y"] --> B1["nie + szczę + liwy"]
+    subgraph "GPT-4o widzi (tokenizacja BPE):"
+        B["nie-szczęśliw-y"] --> B1["nie + -s + zcz + ę + śli + wy"]
     end
     
     style A1 fill:#99ff99,color:#000
