@@ -8,6 +8,9 @@ menu:
   - ["tags", "tags.html"]
   - ["archive", "archive.html"]
   - ["co tam grucha w IT podcast", "https://cotamgruchawit.pl"]
+file_mapping:
+  - source: content/jak-komputer-czyta-tekst.ipynb
+    dest: jak-komputer-czyta-tekst.ipynb
 extra:
   comments:
     title: Komentarze
