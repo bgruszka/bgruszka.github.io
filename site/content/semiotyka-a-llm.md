@@ -418,6 +418,8 @@ Kórą koncepcję semiotyczną uważacie za najbardziej przydatną do zrozumieni
 
 Bo szczerze mówiąc - ja się dopiero uczę tej perspektywy. Ale czuję, że to jest ten moment, gdzie lingwistyka, filozofia i programowanie spotykają się w jednym miejscu i tworzą coś naprawdę fascynującego.
 
+> **Co w następnym wpisie?** Przechodzimy od teorii do praktyki: [Jak komputer czyta tekst - od liczenia słów do wektorów](jak-komputer-czyta-tekst.html). Zobaczymy jak tokenizacja, TF-IDF, łańcuchy Markowa i Word2Vec realizują w kodzie to, o czym mówili Saussure (znaczenie jest relacyjne!) i Derrida (pismo jest systemem samym w sobie!).
+
 Do następnego!
 
 ---
