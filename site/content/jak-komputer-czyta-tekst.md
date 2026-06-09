@@ -1,5 +1,5 @@
 ---
-date: 2026-06-08
+date: 2026-06-09
 tags: llm,ai,nlp,tokenizacja,word2vec,embeddings,tf-idf,markow,bayes,language-models
 series: zrozumiec-llm
 extra:
