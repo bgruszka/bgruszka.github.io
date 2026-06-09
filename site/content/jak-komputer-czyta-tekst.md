@@ -7,6 +7,9 @@ extra:
 ---
 # Jak komputer czyta tekst - od liczenia słów do wektorów
 
+> [!TIP]
+> **Chcesz uruchomić ten kod samemu?** Wszystkie przykłady z tego posta znajdziesz w gotowym notatniku Jupyter: [jak-komputer-czyta-tekst.ipynb](jak-komputer-czyta-tekst.ipynb)
+
 W dwóch poprzednich wpisach zbudowaliśmy sobie solidny fundament. W [pierwszym](cechy-jezykowe-a-llm.html) rozłożyliśmy język na czynniki pierwsze - fonetyka, morfologia, składnia, semantyka, pragmatyka. W [drugim](semiotyka-a-llm.html) zapytaliśmy: "OK, ale czy LLM w ogóle rozumie to, co generuje?" i doszliśmy do wniosku, że LLM jest maszyną znaków, nie umysłem.
 
 Ale zostało mi jedno fundamentalne pytanie, na które nie odpowiedziałem: **jak komputer w ogóle "bierze" tekst do środka?**
