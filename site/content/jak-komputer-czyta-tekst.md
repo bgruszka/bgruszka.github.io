@@ -68,15 +68,15 @@ Krótko: **cięcie po spacjach nie działa**. Świat jest za skomplikowany na ta
 
 ### Token ≠ słowo ≠ morfem
 
-W [pierwszym poście](cechy-jezykowe-a-llm.html) poznaliśmy morfemy - najmniejsze jednostki znaczące. "Nie-szczęśliw-y" to trzy morfemy. A teraz uwaga: **token to nie to samo co morfem.**
+W [pierwszym poście](cechy-jezykowe-a-llm.html) poznaliśmy morfemy - najmniejsze jednostki znaczące. "Nieszczęśliwy" to trzy morfemy: "nie-szczęśliw-y". A teraz uwaga: **token to nie to samo co morfem.**
 
 ```mermaid
 graph LR
     subgraph "Lingwista widzi:"
-        A["nie-szczęśliwy"] --> A1["nie + szczęśliw + y<br/><i>morfemy</i>"]
+        A["nieszczęśliwy"] --> A1["nie + szczęśliw + y<br/><i>morfemy</i>"]
     end
     subgraph "GPT-4o widzi (tokeny BPE):"
-        B["nie-szczęśliwy"] --> B1["nie + -s + zcz + ę + śli + wy"]
+        B["nieszczęśliwy"] --> B1["nie + -s + zcz + ę + śli + wy"]
     end
     
     style A1 fill:#99ff99,color:#000
@@ -108,7 +108,7 @@ Mamy mały korpus z pięcioma polskimi słowami i ich częstotliwościami:
 "bat"  ×4      "lasy" ×5
 ```
 
-("las" = las, "lak" = pokost/lakier, "lat" = lat (od "rok"), "bat" = bicz, "lasy" = lasy)
+("las" = las, "lak" = lak do pieczęci, "lat" = lat (od "rok"), "bat" = bicz, "lasy" = po prostu lasy)
 
 **Krok 0:** Dzielimy wszystko na pojedyncze znaki:
 
@@ -359,9 +359,9 @@ Różnica między BPE a WordPiece jest subtelna: BPE scala po prostu **najczęst
 
 Mamy nasze scalenia z powyższego przykładu: l+a→la, la+s→las, la+t→lat, la+k→lak, las+y→lasy. Jak BPE podzieli te nowe słowa?
 
-1. "last" (zakładając, że nie było w korpusie)
-2. "basa" (zakładając, że nie było w korpusie)
-3. "salatka" (tak, to jedno słowo!)
+1. "klasa" (zakładając, że nie było w korpusie)
+2. "lata" (zakładając, że nie było w korpusie)
+3. "laska" (popularne polskie słowo!)
 
 ---
 
@@ -369,7 +369,7 @@ Mamy nasze scalenia z powyższego przykładu: l+a→la, la+s→las, la+t→lat, 
 
 ### Co to jest korpus?
 
-OK, mamy tokeny. Ale tokenów bez kontekstu jest tyle, co liści na drzewie - dużo i nic z tym nie zrobisz. Żeby tokeny miały sens, potrzebujemy **korpusu**.
+OK, mamy tokeny. Ale skąd tokenizator wie, które pary znaków scalać? Z **korpusu**! BPE uczy się najczęstszych połączeń z tekstu. I żeby zrobić cokolwiek z tokenami - policzyć je, znaleźć wzorce, wytrenować model - też potrzebujemy korpusu.
 
 **Korpus** to po prostu zbiór tekstów. Może to być:
 - zbiór wszystkich artykułów z Wikipedii
@@ -391,14 +391,11 @@ graph TD
     style D3 fill:#ffcc99,color:#000
 ```
 
-Przykłady prawdziwych korpusów:
-- **NKJP** (Narodowy Korpus Języka Polskiego) - miliony polskich tekstów
-
-Ale w świecie LLM-ów korpusy są o wiele większe. To są zbiory danych, na których trenuje się prawdziwe modele - i tokenizery, i same modele:
+I to są właśnie zbiory danych, na których trenuje się prawdziwe modele - i tokenizery, i same modele:
 
 | Korpus | Co zawiera | Rozmiar | Ciekawostka |
 |---|---|---|---|
-| **WikiText** | Artykuły z Wikipedii (angielskiej) | ~500 MB | Standardowy benchmark do ewaluacji modeli językowych |
+| **Wikitext** | Artykuły z Wikipedii (angielskiej) | ~500 MB | Standardowy benchmark do ewaluacji modeli językowych |
 | **Wiki-40B** | Wikipedia w 59 językach (w tym polskim!) | ~40 GB | Pierwszy krok wielu modeli wielojęzycznych |
 | **EuroParl** | Transkrypcje z parlamentu UE (21 języków) | ~2 GB | Wysokiej jakości teksty oficjalne, świetny do tłumaczeń |
 | **Common Crawl** | Zrzuty treści ze stron internetowych | **petabajty** (PB!) | Największy publicznie dostępny korpus webowy. Większość LLM-ów z niego korzysta |
@@ -406,6 +403,12 @@ Ale w świecie LLM-ów korpusy są o wiele większe. To są zbiory danych, na kt
 | **The Pile** | Mix 22 źródeł (arXiv, GitHub, Wikipedia, książki...) | ~825 GB | Stworzony przez EleutherAI jako zbiór "do wszystkiego" |
 | **RedPajama** | Otwarta replika danych treningowych LLaMA | ~1.2 TB | To dlatego LLaMA jest tak dobra - trenowana na ogromnym, różnorodnym zbiorze |
 | **OSCAR** | Zrzuty z internetu, filtrowane po językach | ~6.5 TB | Ma osobne podzbiory dla każdego języka, w tym polski OSCAR |
+
+A polskie korpusy? Oto najważniejsze:
+- **NKJP** (Narodowy Korpus Języka Polskiego) - miliony polskich tekstów, zrównoważony zbiór z różnych dziedzin
+- **Polish-ROBERTa corpus** - ~20 GB polskiego tekstu z internetu, na nim trenowano Polish RoBERTa
+- **OSCAR (polska część)** - polskie strony z Common Crawl, kilkaset GB
+- **Wikipedia po polsku** - ~2 GB artykułów, często punkt wyjścia do polskich modeli
 
 ```mermaid
 graph LR
@@ -929,7 +932,7 @@ To jest trochę jak założenie, że pogoda w Warszawie nie zależy od pogody w 
 
 Skoro już rozumiemy matematykę, zróbmy to w kilku linijkach kodu. Biblioteka `scikit-learn` ma gotowy klasyfikator Naive Bayes:
 
-- **`CountVectorizer`** - zamienia tekst na wektor zliczeń słów (czyli nasz BoW z poprzedniej sekccji)
+- **`CountVectorizer`** - zamienia tekst na wektor zliczeń słów (czyli nasz BoW z poprzedniej sekcji)
 - **`MultinomialNB`** - to jest właśnie Naive Bayes, tzw. "wielomianowy" (bo liczy prawdopodobieństwa słów), z `alpha=1.0` czyli Laplace smoothing
 
 ```python
@@ -1071,6 +1074,97 @@ Jak to działa wewnątrz? Sieć neuronowa z jedną ukrytą warstwą:
 5. Sieć trenuje się na milionach par (słowo, kontekst), aktualizując macierz **W**
 6. Po treningu, **wiersz macierzy W odpowiadający danemu słowu to jego embedding**
 
+Brzmi skomplikowanie? Zróbmy to w kodzie - od zera, bez żadnych bibliotek ML:
+
+```python
+import numpy as np
+
+np.random.seed(42)
+
+# --- 1. Słownik i one-hot encoding ---
+corpus = "kot siedzi na macie i śpi pies siedzi na dywanie i śpi kot biega po pokoju pies biega po parku".split()
+vocab = list(set(corpus))
+word2idx = {w: i for i, w in enumerate(vocab)}
+vocab_size = len(vocab)
+
+def one_hot(word):
+    vec = np.zeros(vocab_size)
+    vec[word2idx[word]] = 1
+    return vec
+
+print(f'One-hot "kot": {one_hot("kot")}')
+# [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1.]  - tylko jedna jedynka!
+
+# --- 2. Macierz wag (to będą nasze embeddingi) ---
+embed_dim = 5  # w prawdziwym Word2Vec to 100-300
+W1 = np.random.randn(vocab_size, embed_dim) * 0.01  # słownik → embedding
+W2 = np.random.randn(embed_dim, vocab_size) * 0.01  # embedding → słownik
+
+# --- 3. Pary treningowe (CBOW: kontekst → środek) ---
+window = 2
+pairs = []
+for i in range(window, len(corpus) - window):
+    context = corpus[i - window:i] + corpus[i + 1:i + window + 1]
+    target = corpus[i]
+    pairs.append((context, target))
+
+print(f'Kontekst: {pairs[0][0]} → Cel: {pairs[0][1]}')
+# Kontekst: ['kot', 'siedzi', 'macie', 'i'] → Cel: na
+
+# --- 4. Trening (gradient descent) ---
+def softmax(x):
+    e = np.exp(x - np.max(x))
+    return e / e.sum()
+
+for epoch in range(500):
+    loss = 0
+    for context_words, target_word in pairs:
+        context_idx = [word2idx[w] for w in context_words]
+        target_idx = word2idx[target_word]
+
+        # forward: uśrednione embeddingi kontekstu → przewidujemy środek
+        hidden = np.mean(W1[context_idx], axis=0)
+        output = softmax(hidden @ W2)
+        loss -= np.log(output[target_idx] + 1e-8)
+
+        # backward: aktualizujemy wagi
+        grad = output.copy()
+        grad[target_idx] -= 1
+        W2 -= 0.05 * np.outer(hidden, grad)
+        grad_hidden = grad @ W2.T
+        for idx in context_idx:
+            W1[idx] -= 0.05 * grad_hidden / len(context_idx)
+
+# --- 5. Wynik: embeddingi! ---
+for word in ["kot", "pies", "siedzi", "biega"]:
+    print(f"{word}: {W1[word2idx[word]].round(3)}")
+
+# --- 6. Podobieństwo kosinusowe ---
+def cosine(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-8)
+
+print(f'kot ↔ pies: {cosine(W1[word2idx["kot"]], W1[word2idx["pies"]]):.3f}')
+print(f'kot ↔ siedzi: {cosine(W1[word2idx["kot"]], W1[word2idx["siedzi"]]):.3f}')
+print(f'kot ↔ biega: {cosine(W1[word2idx["kot"]], W1[word2idx["biega"]]):.3f}')
+```
+
+```
+One-hot "kot": [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1.]
+Kontekst: ['kot', 'siedzi', 'macie', 'i'] → Cel: na
+kot: [-2.866 -0.264 -0.225 -1.822  2.783]
+pies: [-1.133  0.678 -1.537  1.989  2.241]
+siedzi: [ 1.524 -0.023  1.804 -2.355 -0.788]
+biega: [ 2.     4.098 -0.315  2.971  0.815]
+kot ↔ pies: 0.378
+kot ↔ siedzi: -0.177
+kot ↔ biega: -0.407
+```
+
+Zauważcie: **kot i pies** (0.378) są bardziej podobne niż **kot i biega** (-0.407). Sieć sama odkryła, że "kot" i "pies" to zwierzęta, bo występują w podobnym kontekście. Zero etykiet, zero nadzoru - tylko tekst i matematyka.
+
+> [!NOTE]
+> To jest **cały Word2Vec w ~30 linijkach**. Prawdziwy Word2Vec dodaje jeszcze negative sampling (bo softmax na 50 000 słów jest wolny) i optymalizacje, ale zasada jest dokładnie ta sama.
+
 > [!NOTE]
 > **"Fake task"**: Interesuje nas nie to, co sieć przewiduje, ale **wagi ukrytej warstwy**. Sieć trenujemy na "sztucznym" zadaniu przewidywania kontekstu, ale to, co chcemy wyciągnąć, to macierz W - nasze embeddingi. To trochę jak trenowanie kogoś do rozwiązywania krzyżówek nie po to, żeby dobrze rozwiązywał krzyżówki, ale po to, żeby poszerzył słownik ;-)
 
@@ -1080,8 +1174,8 @@ Jak to działa wewnątrz? Sieć neuronowa z jedną ukrytą warstwą:
 |---|---|---|
 | **Kierunek** | Kontekst → Słowo środkowe | Słowo środkowe → Kontekst |
 | **Szybkość** | Szybszy | Wolniejszy |
-| **Rzadkie słowa** | Gorzej radzi sobie | Lepiej radzi sobie |
-| **Częste słowa** | Lepiej radzi się | Gorzej radzi się |
+| **Rzadkie słowa** | Radzi sobie gorzej | Radzi sobie lepiej |
+| **Częste słowa** | Radzi sobie lepiej | Radzi sobie gorzej |
 | **Kiedy użyć** | Duży korpus, częste słowa | Mały korpus, rzadkie słowa |
 
 Według oryginalnej pracy Mikolova et al.: **Skip-gram jest lepszy dla rzadkich słów i małych zbiorów danych. CBOW jest szybszy i lepszy dla częstych słów.**
@@ -1326,7 +1420,7 @@ Nie jest to Szekspir, ale teksty są bardziej spójne niż czysty losowy Markow.
 To jest malutki krok w kierunku tego, co robią dzisiejsze LLM-y. One też przewidują następne słowo, ale zamiast prostej macierzy przejścia mają wielowarstwowe sieci Transformer z mechanizmem uwagi. Tam "punktowanie kandydatów" jest o wiele, wiele bardziej zaawansowane.
 
 > [!IMPORTANT]
-> **Kluczowa różnica:** Word2Vec daje każdemu słowu JEDEN wektor. Ale "zamek" w "zamek w drzwiach" i "zamek na wzgórzu" to zupełnie inne znaczenia! Word2Vec nie rozróżnia — dlatego w następnym wpisie wejdziemy w Transformer-y, gdzie **kontekst zmienia znaczenie** każdego słowa.
+> **Kluczowa różnica:** Word2Vec daje każdemu słowu JEDEN wektor. Ale "zamek" w "zamek w drzwiach" i "zamek na wzgórzu" to zupełnie inne znaczenia! Word2Vec nie rozróżnia — dlatego w kolejnych wpisach wejdziemy w Transformer-y, gdzie **kontekst zmienia znaczenie** każdego słowa.
 
 ---
 
@@ -1400,4 +1494,4 @@ Jeśli chcecie wejść głębiej, oto materiały, z których korzystałem:
 - [TF-IDF Character N-grams versus Word Embedding-based Models — ACL Anthology](https://aclanthology.org/2020.aespen-1.6/) - kontrast między klasycznymi cechami a embeddingami
 - [TensorFlow Embedding Projector](https://projector.tensorflow.org/) - interaktywna wizualizacja przestrzeni wektorowej (obowiązkowe!)
 
-[^1]: Odpowiedzi do quizu tokenizacyjnego: 1) "last" → ["las", "t"] (l+a→la, la+s→las, a "t" zostaje) 2) "basa" → ["b", "a", "s", "a"] (brak pasujących scalań - litera "b" i "s" nie tworzyły par z "a" w naszych scaleniach) 3) "salatka" → ["s", "a", "lat", "k", "a"] (l+a→la, la+t→lat, ale "s" przed "a" nie pasuje do żadnego scalenia).
+[^1]: Odpowiedzi do quizu tokenizacyjnego: 1) "klasa" → ["k", "las", "a"] (l+a→la, la+s→las, ale "k" nie pasuje do żadnego scalenia) 2) "lata" → ["lat", "a"] (l+a→la, la+t→lat) 3) "laska" → ["las", "k", "a"] (l+a→la, la+s→las, ale "las"+"k" nie ma w scaleniach, więc zostaje podzielone).
